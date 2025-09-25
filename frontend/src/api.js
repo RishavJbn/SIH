@@ -24,9 +24,9 @@ export const loginUser = async (email, password) => {
 export const addDonation = async (token, amount) => {
   const res = await fetch(`${BASE_URL}/donations`, {
     method: "POST",
-    headers: { 
+    headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ amount }),
   });
@@ -37,7 +37,7 @@ export const addDonation = async (token, amount) => {
 export const getDonations = async (token) => {
   const res = await fetch(`${BASE_URL}/donations`, {
     method: "GET",
-    headers: { "Authorization": `Bearer ${token}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   return res.json();
 };
@@ -50,7 +50,7 @@ export const updateUserProfile = async (token, userData) => {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}` // Send the token for authentication
+      Authorization: `Bearer ${token}`, // Send the token for authentication
     },
     body: JSON.stringify(userData),
   });
@@ -63,18 +63,26 @@ export const createPost = async (token, postData) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(postData),
   });
-  return res.json();
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data?.message || "Failed to create post");
+  }
+  return data;
 };
 
 // Get all posts
 export const getPosts = async (token) => {
   const res = await fetch(`${BASE_URL}/posts`, {
     method: "GET",
-    headers: { "Authorization": `Bearer ${token}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
-  return res.json();
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data?.message || "Failed to fetch posts");
+  }
+  return data;
 };
